@@ -304,15 +304,7 @@ function addField([
         ${unique ? "checked" : ""}
       >
 
-      <span class="unique-text">
-
-        Valor único
-
-        <small>
-          Quando usar?
-        </small>
-
-      </span>
+      <span class="unique-text">Valor único</span>
 
     </label>
 
@@ -323,7 +315,7 @@ function addField([
       title="Remover este campo"
       aria-label="Remover este campo"
     >
-      ×
+      Remover campo
     </button>
 
   `;
@@ -365,25 +357,6 @@ function addField([
     input.addEventListener("change", update);
 
   });
-
-
-  // --------------------------------------------------------
-  // EXPLICAÇÃO SOBRE VALOR ÚNICO
-  // --------------------------------------------------------
-
-  const uniqueHelpButton =
-    row.querySelector(".unique-text small");
-
-
-  uniqueHelpButton.onclick = (event) => {
-
-    event.preventDefault();
-
-    event.stopPropagation();
-
-    showUniqueHelp();
-
-  };
 
 
   $("fields").appendChild(row);
