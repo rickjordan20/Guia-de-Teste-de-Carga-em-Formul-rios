@@ -6,24 +6,38 @@
   line-height: 1.2;
 }
 
-.unique-text small {
-  margin-top: 3px;
-  color: var(--orange2);
-  font-size: 0.7rem;
-  font-weight: 800;
-  cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.unique-text small:hover {
-  color: var(--orange);
-}
-
 .unique-help {
   margin: 16px 0;
 }
 
 .unique-help b {
   color: var(--green);
+}
+/* Botão de remoção compacto e claro, inclusive em telas estreitas. */
+.field-row .remove {
+  width: auto;
+  justify-self: end;
+  align-self: end;
+  padding: 8px 12px;
+  font-size: .82rem;
+  font-weight: 800;
+  line-height: 1.25;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.field-row .remove:hover,
+.field-row .remove:focus-visible {
+  border-color: var(--red);
+  background: rgba(255,123,114,.2);
+}
+@media (max-width: 780px) {
+  .field-row .remove {
+    justify-self: end;
+    width: fit-content;
+    min-height: 36px;
+  }
+}
+@media print {
+  .topbar { position: static; }
+  .field-row .remove { display: none; }
 }
