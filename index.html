@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Guia prático para montar testes de carga de formulários com Grafana k6."
+  >
+
+  <title>
+    Guia Prático — Testes de Carga em Formulários
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
+</head>
+
+
+<body>
+
+
+  <!-- =====================================================
+       TOPO
+  ====================================================== -->
+
+  <header class="topbar">
+
+    <div class="wrap brand">
+
+      <div>
+
+        <span class="brand-kicker">
+          QA ACADEMY · k6
+        </span>
+
+        <strong>
+          QA ACADEMY
+        </strong>
+
+      </div>
+
+
+      <span class="brand-tag">
+        Material complementar
+      </span>
+
+    </div>
+
+  </header>
+
+
+  <!-- =====================================================
+       CONTEÚDO
+  ====================================================== -->
+
+  <main class="wrap">
+
+
+    <!-- ===================================================
+         HERO
+    ==================================================== -->
+
+    <section class="hero">
+
+      <span class="pill">
+        🚀 GUIA PRÁTICO
+      </span>
+
+
+      <h1>
+        Teste de carga em
+        <em>formulários</em>
+        com Grafana k6
+      </h1>
+
+
+      <p>
+        Aprenda, passo a passo, a descobrir como um formulário
+        se comunica com o servidor, planejar a carga e gerar
+        o script k6 que será executado no Grafana.
+      </p>
+
+
+      <div class="hero-chips">
+
+        <span>🔎 Network</span>
+
+        <span>👥 VUs</span>
+
+        <span>🧩 Payload</span>
+
+        <span>⚙️ Script k6</span>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+         1. ESCOLHA
+    ==================================================== -->
+
+    <section
+      class="lesson"
+      id="escolha"
+    >
+
+      <div class="lesson-title">
+
+        <span>1</span>
+
+        <div>
+
+          <small>
+            ESCOLHA SEU TESTE
+          </small>
+
+          <h2>
+            Qual formulário você vai testar?
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <p>
+        Escolha a funcionalidade. O guia abaixo será atualizado
+        automaticamente com as orientações específicas para ela.
+      </p>
+
+
+      <div class="choices">
+
+
+        <button
+          class="choice active"
+          data-type="cadastro"
+          type="button"
+        >
+
+          <b>👤</b>
+
+          <strong>
+            Cadastro
+          </strong>
+
+          <small>
+            Criação de usuários
+          </small>
+
+          <i>
+            Investigue no Network
+          </i>
+
+        </button>
+
+
+
+        <button
+          class="choice"
+          data-type="login"
+          type="button"
+        >
+
+          <b>🔐</b>
+
+          <strong>
+            Login
+          </strong>
+
+          <small>
+            Autenticação
+          </small>
+
+          <i>
+            Investigue no Network
+          </i>
+
+        </button>
+
+
+
+        <button
+          class="choice"
+          data-type="contato"
+          type="button"
+        >
+
+          <b>✉️</b>
+
+          <strong>
+            Contato
+          </strong>
+
+          <small>
+            Envio de mensagem
+          </small>
+
+          <i>
+            Investigue no Network
+          </i>
+
+        </button>
+
+
+      </div>
+
+
+      <div
+        class="selected"
+        id="selected"
+      ></div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+         2. CONCEITO
+    ==================================================== -->
+
+    <section class="lesson">
+
+      <div class="lesson-title">
+
+        <span>2</span>
+
+        <div>
+
+          <small>
+            ANTES DE COMEÇAR
+          </small>
+
+          <h2>
+            Entenda o que estamos fazendo
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <div class="compare">
+
+
+        <article>
+
+          <h3>
+            ✅ Teste funcional
+          </h3>
+
+          <p id="functionalText"></p>
+
+        </article>
+
+
+        <article class="orange-card">
+
+          <h3>
+            ⚡ Teste de carga
+          </h3>
+
+          <p>
+            Observa como a mesma operação se comporta
+            quando vários usuários virtuais a executam.
+          </p>
+
+        </article>
+
+
+      </div>
+
+
+      <blockquote>
+
+        Nosso objetivo aqui é
+        <strong>montar corretamente o teste</strong>.
+
+        Os resultados, evidências e a análise final serão
+        registrados na atividade da
+        <strong>QA Academy</strong>.
+
+      </blockquote>
+
+    </section>
+
+
+
+    <!-- ===================================================
+         3. DEVTOOLS
+    ==================================================== -->
+
+    <section class="lesson">
+
+      <div class="lesson-title">
+
+        <span>3</span>
+
+        <div>
+
+          <small>
+            DEVTOOLS
+          </small>
+
+          <h2>
+            Descubra a requisição do formulário
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <p id="discoverIntro"></p>
+
+
+      <div class="path">
+
+        <span>Aplicação</span>
+
+        <b>→</b>
+
+        <span>F12</span>
+
+        <b>→</b>
+
+        <span>Network</span>
+
+        <b>→</b>
+
+        <span>Fetch/XHR</span>
+
+      </div>
+
+
+      <ol class="guide-list">
+
+
+        <li>
+
+          <b>
+            Abra a página correta.
+          </b>
+
+          <p id="openPage"></p>
+
+        </li>
+
+
+        <li>
+
+          <b>
+            Pressione F12 e abra Network.
+          </b>
+
+          <p>
+            Se quiser reduzir a quantidade de itens exibidos,
+            selecione <code>Fetch/XHR</code>.
+          </p>
+
+        </li>
+
+
+        <li>
+
+          <b>
+            Execute a operação manualmente.
+          </b>
+
+          <p id="doAction"></p>
+
+        </li>
+
+
+        <li>
+
+          <b>
+            Encontre a requisição responsável pela operação.
+          </b>
+
+          <p>
+            Não escolha uma requisição apenas pelo nome.
+            Clique nela e confira as informações.
+          </p>
+
+        </li>
+
+
+      </ol>
+
+
+      <div class="tip">
+
+        <b>
+          💡 Você chegou ao lugar certo se:
+        </b>
+
+        ao clicar na requisição, conseguir visualizar as abas
+
+        <strong>Headers</strong>
+
+        e
+
+        <strong>Payload</strong>.
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+         4. HEADERS
+    ==================================================== -->
+
+    <section class="lesson">
+
+      <div class="lesson-title">
+
+        <span>4</span>
+
+        <div>
+
+          <small>
+            HEADERS
+          </small>
+
+          <h2>
+            Descubra Método, URL e Status
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <p>
+        Na requisição selecionada, abra
+        <strong>Headers</strong>
+        e procure:
+      </p>
+
+
+      <div class="three">
+
+
+        <article>
+
+          <span>1</span>
+
+          <b>
+            Request Method
+          </b>
+
+          <p>
+            Qual método HTTP foi utilizado?
+          </p>
+
+        </article>
+
+
+        <article>
+
+          <span>2</span>
+
+          <b>
+            Request URL
+          </b>
+
+          <p>
+            Para qual endereço a operação foi enviada?
+          </p>
+
+        </article>
+
+
+        <article>
+
+          <span>3</span>
+
+          <b>
+            Status Code
+          </b>
+
+          <p>
+            Qual resposta o servidor devolveu?
+          </p>
+
+        </article>
+
+
+      </div>
+
+
+      <details>
+
+        <summary>
+          🧠 O que significam os métodos HTTP?
+        </summary>
+
+
+        <div class="method-grid">
+
+          <p>
+            <b>GET</b>
+            buscar/consultar
+          </p>
+
+          <p>
+            <b>POST</b>
+            enviar/criar
+          </p>
+
+          <p>
+            <b>PUT</b>
+            atualizar/substituir
+          </p>
+
+          <p>
+            <b>PATCH</b>
+            atualizar parcialmente
+          </p>
+
+          <p>
+            <b>DELETE</b>
+            excluir
+          </p>
+
+        </div>
+
+      </details>
+
+
+      <div
+        class="warning"
+        id="statusTip"
+      ></div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+         5. FRONTEND × BACKEND
+    ==================================================== -->
+
+    <section class="lesson">
+
+      <div class="lesson-title">
+
+        <span>5</span>
+
+        <div>
+
+          <small>
+            FRONTEND × BACKEND
+          </small>
+
+          <h2>
+            Por que a Request URL pode ser diferente da página?
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <div class="flow">
+
+
+        <div>
+
+          <b>
+            🌐 FRONTEND
+          </b>
+
+          <small>
+            Página, campos e botões
+          </small>
+
+        </div>
+
+
+        <span>
+          envia a requisição →
+        </span>
+
+
+        <div>
+
+          <b>
+            ⚙️ BACKEND
+          </b>
+
+          <small>
+            Processa a operação
+          </small>
+
+        </div>
+
+
+      </div>
+
+
+      <p>
+
+        No TechEduca, a página pode estar publicada no
+
+        <strong>GitHub Pages</strong>,
+
+        enquanto algumas operações podem ser processadas
+        por um backend hospedado em outro serviço.
+
+      </p>
+
+
+      <div class="warning">
+
+        <b>
+          ⚠️ Não tente adivinhar o endereço do backend.
+        </b>
+
+        Em cada sistema ele pode estar em um lugar diferente.
+
+        Para este teste, utilize a
+
+        <strong>
+          Request URL encontrada no Network
+        </strong>.
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+         6. PAYLOAD
+    ==================================================== -->
+
+    <section class="lesson">
+
+      <div class="lesson-title">
+
+        <span>6</span>
+
+        <div>
+
+          <small>
+            PAYLOAD
+          </small>
+
+          <h2>
+            Descubra quais dados são enviados
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <p>
+
+        Na mesma requisição, abra
+
+        <strong>Payload</strong>.
+
+        Observe os nomes dos campos e os valores enviados.
+
+        Você utilizará essas informações como referência
+        para montar o Payload do seu teste.
+
+      </p>
+
+
+      <div
+        class="example-box"
+        id="payloadExample"
+      ></div>
+
+
+      <div class="tip">
+
+        <b>
+          🔐 Segurança:
+        </b>
+
+        utilize somente dados fictícios ou contas de teste
+        autorizadas.
+
+        Não coloque senhas pessoais, CPF, dados bancários
+        ou informações confidenciais no script.
+
+      </div>
+
+
+      <div
+        class="warning"
+        id="specificTip"
+      ></div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+         7. GERADOR
+    ==================================================== -->
+
+    <section
+      class="lesson generator"
+      id="gerador"
+    >
+
+      <div class="lesson-title">
+
+        <span>7</span>
+
+        <div>
+
+          <small>
+            GERADOR DIDÁTICO
+          </small>
+
+          <h2>
+            Preencha o que você descobriu
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <p>
+
+        Agora transforme sua investigação em uma configuração
+        de teste.
+
+        <strong>
+          Não preencha por adivinhação:
+        </strong>
+
+        use o que você encontrou no Network.
+
+      </p>
+
+
+
+      <!-- =================================================
+           MÉTODO / URL / STATUS / CONTENT-TYPE
+      ================================================== -->
+
+      <div class="form-grid">
+
+
+        <label>
+
+          <b>
+            Método HTTP
+          </b>
+
+          <small>
+            Network → Headers → Request Method
+          </small>
+
+
+          <select id="method">
+
+            <option
+              value=""
+              selected
+              disabled
+            >
+              Selecione o método encontrado
+            </option>
+
+            <option value="GET">
+              GET
+            </option>
+
+            <option value="POST">
+              POST
+            </option>
+
+            <option value="PUT">
+              PUT
+            </option>
+
+            <option value="PATCH">
+              PATCH
+            </option>
+
+            <option value="DELETE">
+              DELETE
+            </option>
+
+          </select>
+
+        </label>
+
+
+
+        <label class="wide">
+
+          <b>
+            Request URL
+          </b>
+
+          <small>
+            Network → Headers → Request URL
+          </small>
+
+
+          <input
+            id="url"
+            type="url"
+            placeholder="Ex.: https://servidor.com/endpoint"
+            autocomplete="off"
+          >
+
+        </label>
+
+
+
+        <label>
+
+          <b>
+            Status HTTP esperado
+          </b>
+
+          <small>
+            Use o status encontrado após realizar corretamente
+            a operação.
+          </small>
+
+
+          <input
+            id="status"
+            type="number"
+            min="100"
+            max="599"
+            placeholder="Ex.: 200"
+            autocomplete="off"
+          >
+
+        </label>
+
+
+
+        <label>
+
+          <b>
+            Formato dos dados
+          </b>
+
+          <small>
+            Confira o Content-Type da requisição.
+          </small>
+
+
+          <select id="contentType">
+
+            <option
+              value=""
+              selected
+              disabled
+            >
+              Selecione o formato encontrado
+            </option>
+
+
+            <option value="application/json">
+              application/json
+            </option>
+
+
+            <option value="application/x-www-form-urlencoded">
+              application/x-www-form-urlencoded
+            </option>
+
+          </select>
+
+        </label>
+
+
+      </div>
+
+
+
+      <!-- =================================================
+           PAYLOAD
+      ================================================== -->
+
+      <div class="payload-editor">
+
+
+        <div class="editor-head">
+
+
+          <div>
+
+            <h3>
+              Monte o Payload do seu teste
+            </h3>
+
+            <p>
+              Use como referência os campos que você encontrou
+              anteriormente em
+              <strong>Network → Payload</strong>.
+            </p>
+
+          </div>
+
+
+          <button
+            id="addField"
+            type="button"
+          >
+            + Adicionar campo
+          </button>
+
+
+        </div>
+
+
+        <div class="tip">
+
+          <b>
+            💡 Agora é com você:
+          </b>
+
+          informe o nome de cada campo e o valor que deseja
+          utilizar no teste.
+
+          Você pode modificar os valores para utilizar dados
+          fictícios, mas os
+
+          <strong>
+            nomes dos campos precisam corresponder ao que
+            a aplicação espera
+          </strong>.
+
+        </div>
+
+
+        <!--
+          Os campos são criados automaticamente
+          pelo script.js.
+        -->
+
+        <div id="fields"></div>
+
+
+      </div>
+
+
+
+      <!-- =================================================
+           CARGA
+      ================================================== -->
+
+      <div class="load-config">
+
+        <h3>
+          👥 Planeje a carga
+        </h3>
+
+
+        <p>
+
+          Defina quantos usuários virtuais serão simulados e
+          quantas vezes
+
+          <strong>
+            cada usuário
+          </strong>
+
+          executará a operação.
+
+        </p>
+
+
+        <div class="load-inputs">
+
+
+          <label>
+
+            <b>
+              VUs
+            </b>
+
+            <small>
+              Usuários virtuais
+            </small>
+
+
+            <input
+              id="vus"
+              type="number"
+              min="1"
+              max="100"
+              placeholder="Ex.: 5"
+              autocomplete="off"
+            >
+
+          </label>
+
+
+
+          <label>
+
+            <b>
+              Execuções por VU
+            </b>
+
+            <small>
+              Quantas vezes cada usuário executará
+            </small>
+
+
+            <input
+              id="iterations"
+              type="number"
+              min="1"
+              max="100"
+              placeholder="Ex.: 1"
+              autocomplete="off"
+            >
+
+          </label>
+
+
+        </div>
+
+
+
+        <!-- CÁLCULO -->
+
+        <div class="math">
+
+          <strong id="mathVus">
+            ?
+          </strong>
+
+          <span>
+            VU(s)
+          </span>
+
+
+          <b>×</b>
+
+
+          <strong id="mathIterations">
+            ?
+          </strong>
+
+          <span>
+            execução(ões)
+          </span>
+
+
+          <b>=</b>
+
+
+          <em>
+
+            <span id="mathTotal">
+              ?
+            </span>
+
+            requisições esperadas
+
+          </em>
+
+        </div>
+
+
+
+        <div class="tip">
+
+          <b>
+            💡 Por que isso é importante?
+          </b>
+
+          Neste guia usaremos
+
+          <code>
+            per-vu-iterations
+          </code>.
+
+          Assim, você consegue saber antecipadamente quantas
+          execuções serão realizadas:
+
+          <strong>
+            VUs × execuções por VU
+          </strong>.
+
+        </div>
+
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+         8. CONFERÊNCIA
+    ==================================================== -->
+
+    <section class="lesson">
+
+      <div class="lesson-title">
+
+        <span>8</span>
+
+        <div>
+
+          <small>
+            CONFERÊNCIA
+          </small>
+
+          <h2>
+            Revise antes de gerar
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="review"
+        id="review"
+      ></div>
+
+
+
+      <div class="checks">
+
+
+        <label>
+
+          <input
+            class="confirm"
+            type="checkbox"
+          >
+
+          Conferi o método no Network.
+
+        </label>
+
+
+        <label>
+
+          <input
+            class="confirm"
+            type="checkbox"
+          >
+
+          Copiei a Request URL do Network.
+
+        </label>
+
+
+        <label>
+
+          <input
+            class="confirm"
+            type="checkbox"
+          >
+
+          Conferi o Content-Type da requisição.
+
+        </label>
+
+
+        <label>
+
+          <input
+            class="confirm"
+            type="checkbox"
+          >
+
+          Conferi os campos e valores do Payload.
+
+        </label>
+
+
+        <label>
+
+          <input
+            class="confirm"
+            type="checkbox"
+          >
+
+          Fiz a operação manualmente e confirmei o
+          status de sucesso.
+
+        </label>
+
+
+        <label>
+
+          <input
+            class="confirm"
+            type="checkbox"
+          >
+
+          Entendi quantas requisições meu cenário deverá
+          executar.
+
+        </label>
+
+
+      </div>
+
+
+
+      <button
+        class="generate"
+        id="generate"
+        type="button"
+      >
+        ⚙️ Gerar / Atualizar meu script k6
+      </button>
+
+
+      <p
+        class="error"
+        id="error"
+      ></p>
+
+    </section>
+
+
+
+    <!-- ===================================================
+         9. SCRIPT
+    ==================================================== -->
+
+    <section
+      class="lesson hidden"
+      id="scriptSection"
+    >
+
+      <div class="lesson-title">
+
+        <span>9</span>
+
+        <div>
+
+          <small>
+            SEU SCRIPT
+          </small>
+
+          <h2>
+            Confira o código antes de copiar
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <p>
+
+        Você não precisa decorar JavaScript.
+
+        Mas precisa reconhecer no código as decisões que
+        acabou de tomar.
+
+      </p>
+
+
+      <div
+        class="script-check"
+        id="scriptCheck"
+      ></div>
+
+
+
+      <div class="codebox">
+
+
+        <div class="codebar">
+
+          <span>
+            script-k6.js
+          </span>
+
+
+          <button
+            id="copy"
+            type="button"
+          >
+            📋 Copiar script
+          </button>
+
+        </div>
+
+
+        <pre><code id="code"></code></pre>
+
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+         10. GRAFANA
+    ==================================================== -->
+
+    <section class="lesson">
+
+      <div class="lesson-title">
+
+        <span>10</span>
+
+        <div>
+
+          <small>
+            GRAFANA CLOUD
+          </small>
+
+          <h2>
+            Leve o script para o k6
+          </h2>
+
+        </div>
+
+      </div>
+
+
+
+      <div class="path">
+
+        <span>
+          Create a test
+        </span>
+
+        <b>→</b>
+
+        <span>
+          Manual
+        </span>
+
+        <b>→</b>
+
+        <span>
+          Web application
+        </span>
+
+        <b>→</b>
+
+        <span>
+          Write a script
+        </span>
+
+      </div>
+
+
+
+      <ol class="guide-list">
+
+
+        <li>
+
+          <b>
+            Abra o editor de script.
+          </b>
+
+          <p>
+            O Grafana pode mostrar inicialmente um exemplo
+            da aplicação QuickPizza.
+          </p>
+
+        </li>
+
+
+        <li>
+
+          <b>
+            Apague o código de exemplo.
+          </b>
+
+          <p>
+            QuickPizza é apenas uma demonstração do Grafana
+            e não representa o seu formulário.
+          </p>
+
+        </li>
+
+
+        <li>
+
+          <b>
+            Cole o script gerado neste guia.
+          </b>
+
+          <p>
+            Antes de executar, confira novamente URL,
+            VUs, execuções e status esperado.
+          </p>
+
+        </li>
+
+
+        <li>
+
+          <b>
+            Comece pequeno.
+          </b>
+
+          <p>
+
+            Faça primeiro um teste de controle com
+
+            <code>
+              1 VU × 1 execução = 1 requisição
+            </code>.
+
+            Se funcionar, avance para a carga solicitada
+            pelo instrutor.
+
+          </p>
+
+        </li>
+
+
+      </ol>
+
+
+
+      <div class="warning">
+
+        <b>
+          ⚠️ Não aumente a carga sem autorização.
+        </b>
+
+        Testes de carga geram tráfego real.
+
+        Use somente sistemas e cargas autorizados para
+        a atividade.
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+         FINAL
+    ==================================================== -->
+
+    <section class="finish">
+
+      <span>
+        🎯
+      </span>
+
+
+      <div>
+
+        <h2>
+          Pronto para executar.
+        </h2>
+
+
+        <p>
+
+          Depois da execução, registre os resultados,
+          evidências e sua análise diretamente na missão
+          correspondente da
+
+          <strong>
+            QA Academy
+          </strong>.
+
+        </p>
+
+      </div>
+
+    </section>
+
+
+  </main>
+
+
+
+  <!-- =====================================================
+       RODAPÉ
+  ====================================================== -->
+
+  <footer>
+
+    <div class="wrap">
+
+      <b>
+        QA ACADEMY · Grafana k6
+      </b>
+
+      <span>
+        Material complementar para testes de carga
+      </span>
+
+    </div>
+
+  </footer>
+
+
+
+  <!-- =====================================================
+       JAVASCRIPT
+  ====================================================== -->
+
+  <script src="script.js"></script>
+
+
+</body>
+
+</html>
